@@ -1,0 +1,23 @@
+name: Git Pull Automation
+
+on:
+  push:
+    branches:
+      - main  # Cette action se déclenche lorsque vous effectuez un push sur la branche "main"
+      
+jobs:
+  git_pull:
+    runs-on: macos-latest  # Vous pouvez remplacer "ubuntu-latest" par "macos-latest" si vous souhaitez exécuter sur MacOS
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2  # Ce plugin vérifie le code depuis votre dépôt GitHub
+      
+    - name: SSH into the server and pull latest code
+      run: |
+        ssh -i ${{ secrets.SSH_PRIVATE_KEY }} redouane@105.159.245.6 << 'EOF'  # Remplacez "user" et "hostname" par votre utilisateur et votre machine
+        cd /Users/redouane/pull-test  # Remplacez par le chemin local où se trouve votre dépôt
+        git pull origin main  # Cette commande effectuera un git pull pour récupérer les dernières modifications
+        EOF
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Assurez-vous que votre clé SSH est stockée dans les secrets GitHub pour des raisons de sécurité
+                                                                                                                                                   
